@@ -1,0 +1,59 @@
+#SpringBoot使用一个全局的配置文件，配置文件名是固定的；
+#•application.properties或者application.yml
+#配置文件的作用：修改SpringBoot自动配置的默认值；SpringBoot在底层都给我们自动配置好；
+
+#字符串默认不用加上单引号或者双引号；
+#双引号；不会转义字符串里面的特殊字符；特殊字符会作为本身想表示的意思   name: "zhangsan \n lisi"：输出；zhangsan 换行 lisi
+#单引号；会转义特殊字符，特殊字符最终只是一个普通的字符串数据    name: ‘zhangsan \n lisi’：输出；zhangsan \n lisi
+spring:
+  profiles:
+    active:
+    - prod
+---
+server:
+  port: 8081     #修改启动服务的端口号
+
+#对象、Map（属性和值）（键值对）：
+friends:
+  name: zhangsan
+  age: 12     
+#行内写法
+boyfriend: {name: lisi,age: 12}
+#数组
+pets1:
+  -cat
+  -dog
+#行内写法
+pets2: [cat,dog]
+person:
+  name : yyq
+  lastName: ${person.name:moren}_zidingyihouzhui  #获取其他已定义属性的值，：后表示默认值，若没有获取到这个属性则赋默认值，后可以加任意字符串拼接
+  birth: 1992/12/17
+  age: ${random.int(10)}   #随机数 其他还有： ${random.value} ${random.int}  ${random.long} ${random.int(10)}  0~10的随机数  ${random.int[1024,65536]}  ${random.uuid} 在系统启动时随机，生成后不再改变,且范围包前不包后
+  boss: false
+  maps: {k1: v1,k2: 12}
+  friends:
+    -lisi
+    -zhaoliu
+  dog:
+    name: 小狗
+    age: 3
+shuxing: 
+  name: wow
+spring:
+  profiles: prod
+---
+server:
+  port: 8085
+spring:
+  profiles: dev
+---
+server:
+  port: 8087
+spring:
+  profiles: local
+  
+  
+  
+  
+  
