@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 将配置文件中配置的每一个属性的值，映射到这个组件中
@@ -20,10 +21,10 @@ import lombok.Data;
  * prefix属性：注明，配置文件中的哪个属性来映射到这个组件中
  * 只有这个组件是容器中的组件，才能容器提供的@ConfigurationProperties功能
  * 
- * 
+ *  @value是Spring的注解
  *  @ConfigurationProperties和@value的对比
  *  @ConfigurationProperties优点： 批量注入 语法松散 支持JSR303数据校验 支持复杂类型
- *  @ConfigurationProperties缺点： 不支持SpEl
+ *  @ConfigurationProperties缺点： 不支持SpEl→Spring的表达式语言
  *  @Value优点：支持SpEl
  *  @value缺点：一个一个属性指定  语法严格 不支持数据校验 不支持复杂类型数据
  *  注意：配置文件yml还是properties他们都能获取到值；
@@ -37,12 +38,22 @@ import lombok.Data;
  *  
  *  属性文件加载顺序：
  *  springboot 文件加载顺序 一般默认加载application.propertise 或者 application.yml文件
+   * 加载顺序：
+   *       命令行
+ *  ①优先加载带profile的文件，由jar包外（和jar包统计目录）到jar包内  。再加载不带profile的文件， 由jar包外（和jar包统计目录）到jar包内  
+ *  ②file:./config (项目根目录下) 基本不使用  →不会被打进包内
+ *  ③file:./   基本不使用 →不会被打进包内
+ *  ④classpath:/config  经常使用
+ *  ⑤classpath:/   经常使用
+ *  优先级由高到低全部加载，优先级高的数据覆盖优先级低的数据
  *  spring会从classpath下的/config目录或者classpath的根目录查找application.properties或application.yml。
  *  /config优先于classpath根目录
  */
 @Component  //只有这个组件是容器中的组件，才能容器提供的@ConfigurationProperties功能
-@ConfigurationProperties(prefix="person")  //默认从全局配置文件中获取值；  resource目录下的applicaion.yml或者applicaion.properties,和@PropertySource可同时使用，但先加载默认配置文件的属性,后加载的配置内容，同名不生效
-@PropertySource(value={"classpath:config/person.properties","classpath:config/parent.properties","classpath:config/parent2.yml"}, encoding="utf-8") //Spring框架提供  配合@Value使用，注入属性值  encoding属性指定编码格式
+//@ConfigurationProperties(prefix="person")  
+//@ConfigurationProperties：SpringBoot提供 ，默认从全局配置文件中获取值；  resource目录下的applicaion.yml或者applicaion.properties,和@PropertySource可同时使用，但先加载默认配置文件的属性,后加载的配置内容，同名不生效
+@PropertySource(value={"classpath:config/person.properties","classpath:config/parent.properties","classpath:config/parent2.yml"}, encoding="utf-8") 
+//@PropertySource：Spring框架提供 ，加载指定的配置文件，配合@Value或@ConfigurationProperties使用，encoding属性指定编码格式
 //@PropertySource(value={"file:C:\\workspace-SpringBoot\\test\\src\\main\\resources\\config\\parent.properties"}, encoding="utf-8") //使用绝对路径时，用file:
 //@Validated
 @Data
@@ -65,36 +76,21 @@ public class PersonPorperties {
 	 */
 	
 //	@Email
+//	@Value("${person.name}")
 	private String name;
 	private String lastName;
 	private Date birth;
 	private Integer age;
 	private Boolean boss;
 	private Map<String,String> maps;
+	//	@Value("${person.friends}")
 	private List<String> friends;
-	private Dog dog;
-//	@Value("${mmm}")
+	private DogProperties dog;
+//	@Value("${mmm}")o
 	private String hhh;
-	@Value("${qqq}")
+	//	@Value("${qqq}")
 	private String qqq;
 //	@Value("${xxx}")
 	private String xxx;
 	
-class Dog{
-	private String name;
-	private Integer age;
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public Integer getAge() {
-		return age;
-	}
-	public void setAge(Integer age) {
-		this.age = age;
-	}
-		
-}
 }

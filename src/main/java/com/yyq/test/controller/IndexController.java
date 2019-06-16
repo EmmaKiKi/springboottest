@@ -16,7 +16,7 @@ import com.yyq.test.service.IndexService;
 @RestController
 public class IndexController {
 	
-	@Value(value = "${shuxing.name}")
+	//	@Value(value = "${shuxing.name}")
 	private String shuxingName;
 	
 	@Autowired

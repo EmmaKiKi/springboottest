@@ -8,11 +8,18 @@
 spring:
   profiles:
     active:
-    - prod
+      - prod    #①单文件，yml内编写多文档块，②多文件，要求需要被激活的配置文件名称符合application-{profiles}.properties/yml的命名规则 ③命令行 启动时指定 设置运行设置program arguments为--spring.profiles.active=dev
+              #④指定虚拟机参数 修改VM options为 -Dspring.profiles.active=dev （-D是固定写法）
 ---
+debug: true #开启SpringBoot的Debug模式，控制台可打印自动配置报告
 server:
-  port: 8081     #修改启动服务的端口号
-
+  port: 8089     #修改启动服务的端口号
+  servlet:
+    context-path: /test  #设置访问路径  spring boot2.0之后，上下文的配置从server.context-path改为了server.servlet.context-path
+spring:
+  profiles: prod
+  config:
+    location: classpath:com/yyq/test/xxx/application.yml   #指定配置文件的问题，会和默认配置文件互补配置，使用场景：在打好包之后，临时更改配置文件，在命令行指定(命令行优先级最高，可覆盖其他默认配置文件内容)外部配置文件。但在项目内不使用
 #对象、Map（属性和值）（键值对）：
 friends:
   name: zhangsan
@@ -26,22 +33,21 @@ pets1:
 #行内写法
 pets2: [cat,dog]
 person:
-  name : yyq
-  lastName: ${person.name:moren}_zidingyihouzhui  #获取其他已定义属性的值，：后表示默认值，若没有获取到这个属性则赋默认值，后可以加任意字符串拼接
+  name: yyq
+  lastName: ${person.name:moren}_zidingyihouzhui  #使用属性配置占位符，：后表示默认值，若没有获取到这个属性则赋默认值，后可以加任意字符串拼接.属性名驼峰和横线形式的书写格式都可以识别
   birth: 1992/12/17
-  age: ${random.int(10)}   #随机数 其他还有： ${random.value} ${random.int}  ${random.long} ${random.int(10)}  0~10的随机数  ${random.int[1024,65536]}  ${random.uuid} 在系统启动时随机，生成后不再改变,且范围包前不包后
+  age: ${random.int(10)}   #随机数 其他还有： ${random.value}任意随机数 ${random.int}  ${random.long} ${random.int(10)}  0~10的随机数  ${random.int[1024,65536]}  ${random.uuid} 在系统启动时随机，生成后不再改变,且范围包前不包后
   boss: false
   maps: {k1: v1,k2: 12}
   friends:
-    -lisi
-    -zhaoliu
+    - lisi
+    - zhaoliu
   dog:
     name: 小狗
     age: 3
 shuxing: 
   name: wow
-spring:
-  profiles: prod
+
 ---
 server:
   port: 8085
